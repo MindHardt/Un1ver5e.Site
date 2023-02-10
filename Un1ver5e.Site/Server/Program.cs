@@ -5,7 +5,8 @@ Host.CreateDefaultBuilder(args)
     {
         config
         .AddJsonFile("appsettings.json")
-        .AddEnvironmentVariables();
+        .AddEnvironmentVariables()
+        .AddUserSecrets(typeof(Program).Assembly);
     })
     .UseSerilog((ctx, logger) =>
     {
