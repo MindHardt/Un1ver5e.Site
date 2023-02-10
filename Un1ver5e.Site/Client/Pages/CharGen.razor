@@ -1,11 +1,33 @@
 ﻿@page "/chargen"
+@using ArkLens.Models.Drafts;
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@attribute [Authorize]
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Un1ver5e.Site.Client.Shared.СharacterElements
+@inject AuthenticationStateProvider Auth
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>CharGen</PageTitle>
+
+<NameComponent
+	Draft="Draft"/>
+
+<AlignmentComponent
+	Draft="Draft"/>
+
+<RaceComponent
+	Draft="Draft"/>
+
+<SexComponent
+	Draft="Draft"/>
+
+<SvgComponent
+	Draft="Draft"/>
 
 @code {
+	private CharacterDraft Draft { get; set; } = new();
+	private AuthenticationState AuthState { get; set; } = null!;
 
+	protected override async Task OnInitializedAsync()
+	{
+		AuthState = await Auth.GetAuthenticationStateAsync();
+	}
 }

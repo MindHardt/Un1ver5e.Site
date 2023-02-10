@@ -1,0 +1,11 @@
+﻿@using ArkLens.Models
+@inherits CharacterElementComponentBase
+
+<label>⚥ Выберите пол</label>
+<select @bind=@Draft.Sex.Name>
+	<option disabled selected hidden>Выберите пол</option>
+	@foreach (var sex in Sex.PossibleValues)
+	{
+		<option value="@sex.Name">@sex.ToString()</option>
+	}
+</select>

@@ -1,7 +1,16 @@
-﻿@inherits CharacterElementComponentBase;
+﻿@using ArkLens.Core;
+@using ArkLens.Models.Drafts;
+@using ArkLens.Models.Drafts.SvgFiles;
+@inherits CharacterElementComponentBase;
 
-
+@((MarkupString)Svg.Result)
 
 @code {
-	
+	private DynamicSvg<CharacterDraft> Svg { get; set; } = null!;
+
+	protected override void OnInitialized()
+	{
+		Svg = CharacterDraftSvg.GetOrCreate(Draft);
+		Svg.Value.PropertyChanged += (_, _) => StateHasChanged();
+	}
 }

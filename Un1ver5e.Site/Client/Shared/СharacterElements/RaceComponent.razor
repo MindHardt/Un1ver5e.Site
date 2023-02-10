@@ -1,0 +1,11 @@
+﻿@using ArkLens.Models.Races;
+@inherits CharacterElementComponentBase
+
+<label>👤 Выберите расу</label>
+<select @bind=@Draft.Race.Name>
+	<option disabled selected hidden>Выберите расу</option>
+	@foreach (var race in Race.PossibleValues)
+	{
+		<option value="@race.Name">@race.ToString()</option>
+	}
+</select>

@@ -1,0 +1,11 @@
+﻿@using ArkLens.Models.Alignments;
+@inherits CharacterElementComponentBase
+
+<label>🧭 Выберите мировоззрение</label>
+<select @bind=@Draft.Alignment.Name>
+	<option disabled selected hidden>Выберите мировоззрение</option>
+	@foreach (var alignment in Alignment.PossibleValues)
+	{
+		<option value="@alignment.Name">@alignment.ToString()</option>
+	}
+</select>
