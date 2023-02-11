@@ -1,0 +1,60 @@
+﻿@using System.Text.Json;
+@using ArkLens.Models.Drafts;
+@using ArkLens.Models.Drafts.SvgFiles;
+@using System.Text;
+@inherits CharacterElementComponentBase
+@inject HttpClient Http
+@inject AuthenticationStateProvider Auth
+@inject IJSRuntime JS
+
+<button @onclick="async _ => await UploadAsync()">
+	☁ Сохранить
+</button>
+<button @onclick="async _ => await DownloadJsonAsync()">
+	📩 JSON
+</button>
+<button @onclick="async _ => await DownloadSvgAsync()">
+	📩 SVG
+</button>
+<span>
+	@(Response is null ? "-" : Response.IsSuccessStatusCode ? "✅" : "❌")
+</span>
+
+@code {
+	private HttpResponseMessage? Response { get; set; }
+	private AuthenticationState AuthState { get; set; } = null!;
+
+	private async ValueTask UploadAsync()
+	{
+		Response = await Http.PostAsJsonAsync("api/CharacterDrafts", Draft);
+	}
+
+	private async ValueTask DownloadJsonAsync()
+	{
+		JsonSerializerOptions jsonOptions = new()
+		{
+			WriteIndented = true,
+			Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+		};
+		string json = JsonSerializer.Serialize(Draft, jsonOptions);
+
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+		string fileName = $"{Draft.Name}.AL.json";
+
+		await JS.DownloadFileAsync(stream, fileName);
+	}
+
+	private async ValueTask DownloadSvgAsync()
+	{
+		string svg = CharacterDraftSvg.GetOrCreate(Draft).Result;
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(svg));
+		string fileName = $"{Draft.Name}.AL.svg";
+
+		await JS.DownloadFileAsync(stream, fileName);
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		AuthState = await Auth.GetAuthenticationStateAsync();
+	}
+}
