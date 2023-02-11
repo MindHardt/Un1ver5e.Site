@@ -36,6 +36,8 @@ public class Startup
         });
         services.AddRepositories<ApplicationDbContext>();
 
+        services.AddSwaggerGen();
+
         services.AddDatabaseDeveloperPageExceptionFilter();
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -61,7 +63,13 @@ public class Startup
         {
             app.UseMigrationsEndPoint();
             app.UseWebAssemblyDebugging();
-        }
+
+			app.UseSwagger();
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Un1ve5e.Site API V1");
+			});
+		}
         else
         {
             app.UseExceptionHandler("/Error");
@@ -70,7 +78,7 @@ public class Startup
 
         app.UseHttpsRedirection();
 
-        app.UseBlazorFrameworkFiles();
+		app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
 
         app.UseRouting();
