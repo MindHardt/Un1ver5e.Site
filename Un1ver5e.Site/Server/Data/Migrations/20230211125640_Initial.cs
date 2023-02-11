@@ -51,6 +51,22 @@ namespace Un1ver5e.Site.Server.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CharacterDraft",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Alignment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Race = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CharacterDraft", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeviceCodes",
                 columns: table => new
                 {
@@ -253,6 +269,13 @@ namespace Un1ver5e.Site.Server.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CharacterDraft_Name",
+                table: "CharacterDraft",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
                 table: "DeviceCodes",
                 column: "DeviceCode",
@@ -306,6 +329,9 @@ namespace Un1ver5e.Site.Server.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CharacterDraft");
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");

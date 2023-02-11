@@ -34,6 +34,7 @@ public class Startup
         {
             options.UseSqlServer(connectionString);
         });
+        services.AddRepositories<ApplicationDbContext>();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
         services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
