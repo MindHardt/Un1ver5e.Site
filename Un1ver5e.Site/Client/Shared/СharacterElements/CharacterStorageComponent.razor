@@ -1,7 +1,8 @@
 ﻿@using System.Text.Json;
 @using ArkLens.Models.Drafts;
-@using ArkLens.Models.Drafts.SvgFiles;
 @using System.Text;
+@using ArkLens.Models.Snapshots;
+@using ArkLens.Models.SvgFiles;
 @inherits CharacterElementComponentBase
 @inject HttpClient Http
 @inject AuthenticationStateProvider Auth
@@ -26,7 +27,13 @@
 
 	private async ValueTask UploadAsync()
 	{
-		Response = await Http.PostAsJsonAsync("api/CharacterDrafts", Draft);
+		if (Draft.Name is null)
+		{
+			await JS.AlertAsync("Нельзя сохранить персонажа без имени!");
+			return;
+		}
+		var snapshot = CharacterDraftSnapshot.CreateFrom(Draft);
+		Response = await Http.PostAsJsonAsync("api/Characters", snapshot);
 	}
 
 	private async ValueTask DownloadJsonAsync()

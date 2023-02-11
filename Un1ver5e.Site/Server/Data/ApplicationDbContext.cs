@@ -1,4 +1,5 @@
 ﻿using ArkLens.Models.Drafts;
+using ArkLens.Models.Snapshots;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,12 @@ namespace Un1ver5e.Site.Server.Data;
 /// The default <see cref="DbContext"/> type for this app.
 /// </summary>
 public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>,
-    IRepository<CharacterDraft>
+    IRepository<CharacterDraftSnapshot>
 {
     /// <summary>
     /// The DbSet of <see cref="CharacterDraft"/>.
     /// </summary>
-    public DbSet<CharacterDraft> CharacterDrafts { get; set; } = null!;
+    public DbSet<CharacterDraftSnapshot> Characters { get; set; } = null!;
 
     /// <summary>
     /// Default ctor.
@@ -28,7 +29,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>,
         DbContextOptions<ApplicationDbContext> options,
         IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
     {
-        //Database.MigrateAsync();
+        ///Database.MigrateAsync();
     }
 
     /// <inheritdoc/>
@@ -36,11 +37,10 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>,
 	{
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-        builder.ApplyConfiguration(new CharacterDraftTypeConfiguration());
 	}
 
 	/// <inheritdoc/>
 	public DbContext Context => this;
 
-    DbSet<CharacterDraft> IRepository<CharacterDraft>.DbSet => CharacterDrafts;
+    DbSet<CharacterDraftSnapshot> IRepository<CharacterDraftSnapshot>.DbSet => Characters;
 }

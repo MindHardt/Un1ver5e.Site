@@ -1,4 +1,4 @@
-﻿using ArkLens.Models.Drafts;
+﻿using ArkLens.Models.Snapshots;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Un1ver5e.Site.Server.Data.Interfaces;
@@ -8,12 +8,12 @@ namespace Un1ver5e.Site.Server.Controllers
 	[Route("api/[controller]")]
 	[Authorize]
 	[ApiController]
-	public class CharacterDraftsController : ControllerBase
+	public class CharactersController : ControllerBase
 	{
-		private readonly IRepository<CharacterDraft> _repo;
-		private readonly ILogger<CharacterDraftsController> _logger;
+		private readonly IRepository<CharacterDraftSnapshot> _repo;
+		private readonly ILogger<CharactersController> _logger;
 
-		public CharacterDraftsController(IRepository<CharacterDraft> repo, ILogger<CharacterDraftsController> logger)
+		public CharactersController(IRepository<CharacterDraftSnapshot> repo, ILogger<CharactersController> logger)
 		{
 			_repo = repo;
 			_logger = logger;
@@ -22,15 +22,15 @@ namespace Un1ver5e.Site.Server.Controllers
 		/// <summary>
 		/// Saving Character draft.
 		/// </summary>
-		/// <param name="draft"></param>
+		/// <param name="entity"></param>
 		/// <returns></returns>
 		[HttpPost]
-		public async ValueTask<IActionResult> SaveCharacter(CharacterDraft draft)
+		public async ValueTask<IActionResult> SaveCharacter(CharacterDraftSnapshot entity)
 		{
-			_logger.LogInformation("Saving draft with name {NAME} and id {ID}", draft.Name, draft.Id);
-			_repo.DbSet.Update(draft);
+			_logger.LogInformation("Saving character with name {NAME} and id {ID}", entity.Name, entity.Id);
+			_repo.DbSet.Update(entity);
 			await _repo.Context.SaveChangesAsync();
-			_logger.LogInformation("Saved draft with name {NAME} and id {ID}", draft.Name, draft.Id);
+			_logger.LogInformation("Saved character with name {NAME} and id {ID}", entity.Name, entity.Id);
 			return Ok();
 		}
 	}
