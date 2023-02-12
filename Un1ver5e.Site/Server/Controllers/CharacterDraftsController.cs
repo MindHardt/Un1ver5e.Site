@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Un1ver5e.Site.Server.Data.Interfaces;
+using Un1ver5e.Site.Server.Models;
 
 namespace Un1ver5e.Site.Server.Controllers
 {
@@ -25,12 +26,14 @@ namespace Un1ver5e.Site.Server.Controllers
 		/// <param name="entity"></param>
 		/// <returns></returns>
 		[HttpPost]
-		public async ValueTask<IActionResult> SaveCharacter(CharacterDraftSnapshot entity)
+		public async ValueTask<IActionResult> SaveCharacter(OwnedCharacterDraftSnapshot entity)
 		{
-			_logger.LogInformation("Saving character with name {NAME} and id {ID}", entity.Name, entity.Id);
+			_logger.LogInformation("Saving character with name {NAME}, owner id {OWNERID} and id {ID}", 
+				entity.Name, entity.Owner.Id, entity.Id);
 			_repo.DbSet.Update(entity);
 			await _repo.Context.SaveChangesAsync();
-			_logger.LogInformation("Saved character with name {NAME} and id {ID}", entity.Name, entity.Id);
+			_logger.LogInformation("Saved character with name {NAME}, owner id {OWNERID} and id {ID}",
+				entity.Name, entity.Owner.Id, entity.Id);
 			return Ok();
 		}
 	}
