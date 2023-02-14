@@ -60,5 +60,25 @@ namespace Un1ver5e.Site.Server.Controllers
 				character.Name);
 			return Ok();
 		}
+
+		[HttpGet]
+		public async ValueTask<IActionResult> GetAllCharactersNames()
+		{
+			var userName = User.GetUserName();
+			if (userName is null)
+				return BadRequest("Не удалось получить ваши данные.");
+			_logger.LogInformation("Fetching characters of user {USER}",
+				userName);
+
+			var chars = await _dbCtx.Users
+				//.Include(u => u.Characters)
+				.Where(u => u.Id == userName)
+				.Select(u => u.Characters.Select(c => $"{c.Name}: {c.Race}"))
+				.AsQueryable()
+				.FirstOrDefaultAsync();
+			chars ??= Enumerable.Empty<string>();
+
+			return Ok(chars);
+		}
 	}
 }

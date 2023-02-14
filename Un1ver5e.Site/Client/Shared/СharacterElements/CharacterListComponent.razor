@@ -1,0 +1,22 @@
+﻿@inherits CharacterElementComponentBase
+@inject HttpClient Http
+
+<button @onclick="UpdateListAsync">🔃</button>
+<ol>
+	@foreach (string character in Characters)
+	{
+		<li>@character ✏ 👁</li>
+	}
+</ol>
+
+@code {
+	private IEnumerable<string> Characters { get; set; } = Enumerable.Empty<string>();
+
+	private async Task UpdateListAsync()
+		=> Characters = await Http.GetFromJsonAsync<string[]>("api/Characters") ?? Enumerable.Empty<string>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		await UpdateListAsync();
+	}
+}
