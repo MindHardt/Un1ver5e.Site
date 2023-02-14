@@ -28,13 +28,15 @@ public class Startup
     {
         // Add services to the container.
         const string connstrName = "DefaultConnection";
-        var connectionString = _cfg.GetConnectionString(connstrName) ?? throw new InvalidOperationException($"Connection string '{connstrName}' not found.");
+        var connectionString = _cfg.GetConnectionString(connstrName) 
+            ?? throw new InvalidOperationException($"Connection string '{connstrName}' not found.");
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(connectionString);
+            options.UseNpgsql(connectionString);
         });
-        services.AddRepositories<ApplicationDbContext>();
+
+        services.AddHttpContextAccessor();
 
         services.AddSwaggerGen();
 

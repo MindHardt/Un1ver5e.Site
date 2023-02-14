@@ -1,9 +1,11 @@
 ﻿using ArkLens.Models.Drafts;
+using ArkLens.Models.Snapshots;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Un1ver5e.Site.Server.Data.Interfaces;
+using System.Security.Claims;
 using Un1ver5e.Site.Server.Models;
 
 namespace Un1ver5e.Site.Server.Data;
@@ -11,13 +13,12 @@ namespace Un1ver5e.Site.Server.Data;
 /// <summary>
 /// The default <see cref="DbContext"/> type for this app.
 /// </summary>
-public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>,
-	IRepository<OwnedCharacterDraftSnapshot>
+public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
 {
 	/// <summary>
 	/// The DbSet of <see cref="CharacterDraft"/>.
 	/// </summary>
-	public DbSet<OwnedCharacterDraftSnapshot> Characters { get; set; } = null!;
+	public DbSet<CharacterSnapshot> Characters { get; set; } = null!;
 
 	/// <summary>
 	/// Default ctor.
@@ -28,18 +29,24 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>,
 		DbContextOptions<ApplicationDbContext> options,
 		IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
 	{
-		///Database.MigrateAsync();
+		//Database.MigrateAsync();
 	}
 
 	/// <inheritdoc/>
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
 		base.OnModelCreating(builder);
-		builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
+		builder.Entity<ApplicationUser>()
+			.HasMany(u => u.Characters)
+			.WithOne()
+			.IsRequired()
+			.OnDelete(DeleteBehavior.NoAction);
+
+		builder.Entity<CharacterSnapshot>()
+			.HasKey(cs => cs.Name);
+
+		builder.Entity<CharacterSnapshot>()
+			.ToTable("CharacterSnapshot");
 	}
-
-	/// <inheritdoc/>
-	public DbContext Context => this;
-
-	DbSet<OwnedCharacterDraftSnapshot> IRepository<OwnedCharacterDraftSnapshot>.DbSet => Characters;
 }
